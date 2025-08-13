@@ -56,3 +56,27 @@ input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
 }
 }
+/* @layer components{
+.button_button__zZvWQ.button_primary__BhTpl {
+  @apply text-wrap: nowrap ;
+  @apply   background-image: linear-gradient(to right, var(--tw-gradient-stops));
+   @apply --tw-gradient-from: #ff3c57 var(--tw-gradient-from-position);
+   @apply --tw-gradient-to: rgb(255 60 87 / 0) var(--tw-gradient-to-position);
+   @apply --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+    @apply --tw-gradient-to: #ff7861 var(--tw-gradient-to-position);
+   @apply --tw-text-opacity: 1;
+   @apply color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+   } */
+
+/* @layer base{
+  .button_button__zZvWQ {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    transition-duration: 0ms;
+  }
+} */
