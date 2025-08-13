@@ -5,97 +5,91 @@ import { FaArrowAltCircleRight } from "react-icons/fa";
 import { useState } from "react";
 import FileUploadInput from "@/components/inputFields/fileUploadFIelds";
 import { useLogin } from "@/hooks/loginHooks/useLogin";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 interface FormErrors {
   name?: string;
   email?: string;
   phone?: string;
   experience?: string;
-  api?:string;
+  api?: string;
 }
 
 export default function LoginForm() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    experience: "",
-  });
-  const { errorsList,userLogin } = useLogin();
+  const { errorsList, userLogin, setErrorList } = useLogin();
   const [file, setFile] = useState<File | null>(null);
-  const [errorList, setErrorList] = useState<FormErrors>({});
-  const [fileReset,setFileReset]=useState<boolean>(false);
+  const [fileReset, setFileReset] = useState<boolean>(false);
+  const validationSchema = Yup.object({
+    name: Yup.string()
+      .matches(/^[A-Za-z\s'-]+$/, "Name contains invalid characters.")
+      .required("Name is required."),
+    email: Yup.string()
+      .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format")
+      .required("Email is required"),
+    phone: Yup.string()
+      .matches(/^\d{10}$/, "Phone number must be 10 digits.")
+      .required("Phone is required."),
+    experience: Yup.number()
+      .typeError("Experience must be a number.")
+      .min(0, "Experience must be a non-negative number.")
+      .required("Experience is required."),
+  });
 
-  const handleformChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      phone: "",
+      experience: "",
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      const formPayload = new FormData();
+      formPayload.append("name", values.name);
+      formPayload.append("email", values.email);
+      formPayload.append("phone", values.phone);
+      formPayload.append("experience", values.experience);
+      if (file) {
+        formPayload.append("resume", file);
+      }
+
+      userLogin.mutate(formPayload, {
+        onSuccess: () => {
+          formik.resetForm();
+          setFile(null);
+          setFileReset(true);
+        },
+      });
+    },
+  });
+
   const handleFileChange = (selectedFile: File | null) => {
     setFile(selectedFile);
   };
-  const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // console.log("reached")
-    let newerrors: FormErrors = {};
-    if (!formData.name.trim()) {
-      newerrors.name = "Name is Empty";
-    } else if (!formData.email.trim()) {
-      newerrors.email = "Email is Empty";
-    } else if (!formData.phone.trim()) {
-      newerrors.phone = "Phone is Empty";
-    } else if (!formData.experience.trim()) {
-      newerrors.experience = "Experience is Empty";
-    }
-    if (Object.keys(newerrors).length > 0) {
-      setErrorList(newerrors);
-      return;
-    }
-    const formPayload = new FormData();
-    formPayload.append("name", formData.name);
-    formPayload.append("email", formData.email);
-    formPayload.append("phone", formData.phone);
-    formPayload.append("experience", formData.experience);
-    if (file) {
-      formPayload.append("resume", file);
-    }
-    try {
-      const response = userLogin.mutate(formPayload);
-      // console.log(response);
-    setFormData({ name: "", email: "", phone: "", experience: "" });
-    setFile(null);
-    setErrorList({});
-    setFileReset(true);
-    // setErrorList([])
-  } catch (error: any) {
-    if (error?.status === 400 && Array.isArray(error.details)) {
-      setErrorList(error.details);
-    } else {
-      setErrorList({ api: error.message || "An unexpected error occurred." });
-    }
-  }
-  };
-  const handleClearError=()=>{
-
-  }
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={formik.handleSubmit}>
       <div className="flex-1 rounded-lg shadow-2xl shadow-black/30 bg-gray-50 pb-6 pt-8">
         <div className="w-full">
+          {errorsList.message && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md  relative mb-10 mx-auto w-11/12" role="alert">
+              <span className="block sm:inline">{errorsList.message}</span>
+            </div>
+          )}
           <div className=" flex items-center justify-between ml-5 ">
             <div className="relative ">
               <InputField
-                value={formData.name}
-                onChange={handleformChange}
+                value={formik.values.name}
+                onChange={formik.handleChange}
                 required={true}
                 className="peer  text-lg border-b-2 border-gray-300 bg-transparent leading-5 pt-4 px-3 pb-1 focus:outline-0  "
                 type="text"
                 id="name"
                 name="name"
                 placeholder=""
-                error={errorList.name||errorsList.name}
+                error={
+                  (formik.touched.name && formik.errors.name) || errorsList.name
+                }
               />
               <label className="label-floating" htmlFor="name">
                 Name
@@ -103,15 +97,18 @@ export default function LoginForm() {
             </div>
             <div className="relative">
               <InputField
-                value={formData.email}
-                onChange={handleformChange}
+                value={formik.values.email}
+                onChange={formik.handleChange}
                 type="email"
                 name="email"
                 className={
                   "peer  border-b-2 mr-10 border-gray-300 bg-transparent pt-4 px-3 pb-1  text-lg leading-5 focus:outline-0"
                 }
                 placeholder={""}
-                error={errorList.email||errorsList.email}
+                error={
+                  (formik.touched.email && formik.errors.email) ||
+                  errorsList.email
+                }
               />
               <label className="label-floating" htmlFor="email">
                 Email
@@ -121,15 +118,18 @@ export default function LoginForm() {
           <div className="mt-5  flex items-center justify-start ml-5">
             <div className="relative">
               <InputField
-                value={formData.phone}
-                onChange={handleformChange}
+                value={formik.values.phone}
+                onChange={formik.handleChange}
                 type="number"
                 name="phone"
                 className={
                   "peer border-b-2 border-gray-300 bg-transparent pt-4 px-3 pb-1  text-lg leading-5 focus:outline-0"
                 }
                 placeholder={""}
-                error={errorList.phone||errorsList.phone}
+                error={
+                  (formik.touched.phone && formik.errors.phone) ||
+                  errorsList.phone
+                }
               />
               <label className="label-floating" htmlFor="phone">
                 Phone
@@ -138,14 +138,17 @@ export default function LoginForm() {
             <div className="relative ml-7">
               <InputField
                 type="number"
-                value={formData.experience}
-                onChange={handleformChange}
+                value={formik.values.experience}
+                onChange={formik.handleChange}
                 name={"experience"}
                 className={
                   "peer border-b-2 border-gray-300 mr-10  bg-transparent pt-4 px-3 pb-1  text-lg leading-5 focus:outline-0"
                 }
                 placeholder={""}
-                error={errorList.experience||errorsList.experience}
+                error={
+                  (formik.touched.experience && formik.errors.experience) ||
+                  errorsList.experience
+                }
               />
               <label className="label-floating" htmlFor="experience">
                 Experience

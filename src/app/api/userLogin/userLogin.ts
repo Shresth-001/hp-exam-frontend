@@ -1,11 +1,12 @@
-'use server'
+"use server";
 import axios from "axios";
 interface FormErrors {
   name?: string;
   email?: string;
   phone?: string;
   experience?: string;
-  resume?:string;
+  resume?: string;
+  message?: string; 
 }
 export const Login = async (formData: FormData) => {
   const name = formData.get("name") as string;
@@ -15,25 +16,25 @@ export const Login = async (formData: FormData) => {
   const resume = formData.get("resume") as File;
   const errors: FormErrors = {};
   if (!name || name.trim() === "") {
-    errors.name=("Name is required.");
+    errors.name = "Name is required.";
   }
   if (!email || email.trim() === "") {
-    errors.email=("Email is required.");
+    errors.email = "Email is required.";
   }
   if (!phone || phone.trim() === "") {
-    errors.phone=("Phone is required.");
+    errors.phone = "Phone is required.";
   }
   if (!experience || experience.trim() === "") {
-    errors.experience=("Experience is required.");
+    errors.experience = "Experience is required.";
   }
   if (!resume) {
-    errors.resume=("Resume file is required.");
+    errors.resume = "Resume file is required.";
   }
   if (name && name.trim() !== "") {
     console.log("Validating name:", name);
     const nameRegex: RegExp = /^[A-Za-z\s'-]+$/;
     if (!nameRegex.test(name)) {
-      errors.name=("Name contains invalid characters.");
+      errors.name = "Name contains invalid characters.";
     }
   }
 
@@ -41,46 +42,53 @@ export const Login = async (formData: FormData) => {
     const emailRegex: RegExp =
       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) {
-      errors.email=("Email is invalid.");
+      errors.email = "Email is invalid.";
     }
   }
 
   if (phone && phone.trim() !== "") {
     const phoneRegex: RegExp = /^\d{10}$/;
     if (!phoneRegex.test(phone)) {
-      errors.phone=("Phone number must be 10 digits.");
+      errors.phone = "Phone number must be 10 digits.";
     }
   }
 
   if (experience && experience.trim() !== "") {
     const expNum = Number(experience);
     if (isNaN(expNum) || expNum < 0) {
-      errors.experience=("Experience must be a non-negative number.");
+      errors.experience = "Experience must be a non-negative number.";
     }
   }
 
-  if (Object.keys(errors).length>0) {
-    console.log("Validation failed");
-    const err = new Error("Validation failed") as any;
-    err.status = 400;
-    err.details = errors;
-    throw err;
-  }
+   if (Object.keys(errors).length > 0) {
+        return { status: 400, details: errors };
+    }
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const API_URL1 = process.env.PUBLIC_API_URL;
   try {
     console.log(formData.get("name"), formData.get("resume"));
-    console.log("successfull hit");
-    const res = await axios.post("", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-    console.log(res.data);
-    return res.data;
+    const res = await axios.post(`${API_URL}/api/userLogin`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return { success: true, data: res.data };
   } catch (error: any) {
     if (error.response) {
-      const err = new Error(error.response.data.error || "Server error") as any;
-      err.status = error.response.status;
-      err.details = error.response.data.details;
-      throw err;
+      let errorMessage = "Server error"; 
+      if (error.response.status === 404) {
+        errorMessage = "The requested API endpoint was not found.";
+      } else if (error.response.status === 400) {
+        errorMessage = "Bad request: Check your form data.";
+      } else if (error.response.status >= 500) {
+        errorMessage = "Internal server error: The backend is having issues.";
+      }
+      return { 
+                status: error.response.status, 
+                details: { message: errorMessage } 
+            };
     }
-    throw error;
+    return { 
+      success: false, 
+      errors: { message: "Network error. Please check your connection." } 
+    };
   }
 };
