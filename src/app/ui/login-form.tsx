@@ -2,11 +2,12 @@
 import InputField from "@/components/inputFields/inputField";
 import SubmitButton from "@/components/button/submitButton";
 import { FaArrowAltCircleRight } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FileUploadInput from "@/components/inputFields/fileUploadFIelds";
 import { useLogin } from "@/hooks/loginHooks/useLogin";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useRouter } from "next/navigation";
 
 interface FormErrors {
   name?: string;
@@ -17,9 +18,15 @@ interface FormErrors {
 }
 
 export default function LoginForm() {
-  const { errorsList, userLogin, setErrorList } = useLogin();
+  const { errorsList, userLogin, setErrorList,reDirectToDashBoard } = useLogin();
   const [file, setFile] = useState<File | null>(null);
   const [fileReset, setFileReset] = useState<boolean>(false);
+  const router=useRouter();
+  useEffect(()=>{
+    if(reDirectToDashBoard){
+      router.push('/dashboard/stream-selection')
+    }
+  })
   const validationSchema = Yup.object({
     name: Yup.string()
       .matches(/^[A-Za-z\s'-]+$/, "Name contains invalid characters.")
@@ -51,7 +58,7 @@ export default function LoginForm() {
       formPayload.append("phone", values.phone);
       formPayload.append("experience", values.experience);
       if (file) {
-        formPayload.append("resume", file);
+        formPayload.append("resume_url", file);
       }
 
       userLogin.mutate(formPayload, {

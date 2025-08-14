@@ -11,10 +11,10 @@ export async function POST(request: Request) {
   console.log({ name, email, phone, experience });
 
   await new Promise((resolve) => setTimeout(resolve, 2000));
-
+  const token=process.env.DEMO_TOKEN;
   return NextResponse.json({
     success: true,
     message: "Form submitted successfully",
-    data: { name, email, phone, experience },
+    data: { name, email, phone, experience,token},
   });
 }

@@ -13,7 +13,7 @@ export const Login = async (formData: FormData) => {
   const email = formData.get("email") as string;
   const phone = formData.get("phone") as string;
   const experience = formData.get("experience") as string;
-  const resume = formData.get("resume") as File;
+  const resume = formData.get("resume_url") as File;
   const errors: FormErrors = {};
   if (!name || name.trim() === "") {
     errors.name = "Name is required.";
@@ -66,10 +66,12 @@ export const Login = async (formData: FormData) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const API_URL1 = process.env.PUBLIC_API_URL;
   try {
-    console.log(formData.get("name"), formData.get("resume"));
+    console.log(formData.get("name"), formData.get("resume_url"));
     const res = await axios.post(`${API_URL}/api/userLogin`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
+    // console.log(res.data,"here in userLogin");
+    // window.localStorage.setItem('token',res.data.token);
     return { success: true, data: res.data };
   } catch (error: any) {
     if (error.response) {
@@ -79,6 +81,7 @@ export const Login = async (formData: FormData) => {
       } else if (error.response.status === 400) {
         errorMessage = "Bad request: Check your form data.";
       } else if (error.response.status >= 500) {
+        console.log(error.response)
         errorMessage = "Internal server error: The backend is having issues.";
       }
       return { 
