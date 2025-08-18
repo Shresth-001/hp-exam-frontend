@@ -15,12 +15,68 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #ffffff;
+    ---opacity:0.05;
     --foreground: #ededed;
   }
 }
 
 body {
   background: var(--background);
+  --opacity:var(--opacity)
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+@layer components {
+  .input-base {
+    @apply w-full border-b-2 border-gray-300 bg-transparent pt-4 px-3 pb-1 text-sm leading-5;
+  }
+}
+
+@layer base {
+  .input-field {
+    @apply border border-gray-300 rounded-md px-3 py-2 w-full text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+  }
+
+  .input-field-file {
+    @apply border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100;
+  }
+}
+@layer base{
+  .label-floating{
+    @apply pointer-events-none absolute left-0 -top-2 right-0.5 text-gray-500 text-sm 
+          transition-all duration-200 
+          peer-placeholder-shown:top-5 peer-placeholder-shown:text-gray-600 peer-placeholder-shown:text-base
+          peer-focus:top-0 peer-focus:text-gray-500/40 peer-focus:text-sm
+  }
+}
+@layer base{
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+}
+/* @layer components{
+.button_button__zZvWQ.button_primary__BhTpl {
+  @apply text-wrap: nowrap ;
+  @apply   background-image: linear-gradient(to right, var(--tw-gradient-stops));
+   @apply --tw-gradient-from: #ff3c57 var(--tw-gradient-from-position);
+   @apply --tw-gradient-to: rgb(255 60 87 / 0) var(--tw-gradient-to-position);
+   @apply --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+    @apply --tw-gradient-to: #ff7861 var(--tw-gradient-to-position);
+   @apply --tw-text-opacity: 1;
+   @apply color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+   } */
+
+/* @layer base{
+  .button_button__zZvWQ {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    transition-duration: 0ms;
+  }
+} */
