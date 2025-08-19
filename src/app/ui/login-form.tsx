@@ -24,7 +24,7 @@ export default function LoginForm() {
   const router=useRouter();
   useEffect(()=>{
     if(reDirectToDashBoard){
-      router.push('/dashboard/stream-selection')
+      router.push('/user/dashboard/stream-selection')
     }
   })
   const validationSchema = Yup.object({

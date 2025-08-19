@@ -1,5 +1,6 @@
 'use server'
 
+import { apiRequest } from "@/services/axiosServices/apiService";
 import axios from "axios";
 
 interface props{
@@ -7,7 +8,7 @@ interface props{
     set:string;
     token:string;
 }
-const allowedStreams = ['frontend', 'backend', 'sales', 'other'];
+const allowedStreams = ['Frontend', 'Backend', 'Sales', 'Others'];
 const allowedSet = ['A', 'B', 'C', 'D'];
 export const StreamSend=async({set,stream,token}:props)=>{
     if (!stream || stream.trim() === "") {
@@ -22,19 +23,24 @@ export const StreamSend=async({set,stream,token}:props)=>{
   if(!allowedSet.includes(set)){
     console.log("invalid set")
   }
-  const API_URL=process.env.NEXT_PUBLIC_API_URL;
+  const API_URL=process.env.NEXT_PUBLIC_API_STREAM_URL;
   const data={
-    stream:stream,
-    set:set
+    jobRole:stream,
+    paperSet:set
   }
   try {
-    const response=await axios.post(`${API_URL}/api/streamApi`,data,{
+    const response=await apiRequest('post','',data,{
         headers:{
             'Content-Type': 'application/json',
-            'Authorization': `Bearer${token}`
-            }
+           'Authorization': `Bearer ${token}`
+          }
     })
-  } catch (error) {
-    console.log("Error");
+    return response.data;
+  } catch (error:any) {
+    console.log("Error",error);
+    console.log("Error in data",error.data);
+    console.log("Error",error.response);
+    throw error;
+    // throw new Error(error);
   }
 }

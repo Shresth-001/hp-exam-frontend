@@ -1,12 +1,13 @@
 "use client";
 
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import QuestionSet from "./questionSetSelection";
 import SubmitButton from "@/components/button/submitButton";
 import { FaArrowAltCircleRight } from "react-icons/fa";
 import { useStream } from "@/hooks/streamHooks/useStream";
-type OptionId = 'frontend' | 'backend' | 'sales' | 'other';
+import { useRouter } from "next/navigation";
+type OptionId = 'Frontend' | 'Backend' | 'Sales' | 'Others';
 interface Option{
     id:OptionId;
     label:string;
@@ -18,7 +19,17 @@ export default function StreamSelectionList({}) {
   const [set, setSet] = useState<string | null>();
   const [isOpen, setIsOpen] = useState<boolean>();
   const [error, setError] = useState<string>();
-  const {sendStream}=useStream();
+  const {sendStream,redirectToInstruction}=useStream();
+  const router=useRouter();
+  useEffect(()=>{
+    const token=localStorage.getItem('token');
+    if(!token){
+      router.push('/login')
+    }
+    if(redirectToInstruction){
+      router.push('exam/instruction')
+    }
+  })
 
   const handleContinue = () => {
     if (!selected) {
@@ -44,10 +55,10 @@ export default function StreamSelectionList({}) {
     // setSelected(null);
   };
   const options:Option[] = [
-    { id: "frontend", label: "Frontend", icon: "💻" },
-    { id: "backend", label: "Backend", icon: "🖥️" },
-    { id: "sales", label: "Sales", icon: "📊" },
-    { id: "other", label: "Other", icon: "✨" },
+    { id: "Frontend", label: "Frontend", icon: "💻" },
+    { id: "Backend", label: "Backend", icon: "🖥️" },
+    { id: "Sales", label: "Sales", icon: "📊" },
+    { id: "Others", label: "Others", icon: "✨" },
   ];
 
   return (
