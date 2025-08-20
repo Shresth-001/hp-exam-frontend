@@ -29,7 +29,7 @@ export const StreamSend=async({set,stream,token}:props)=>{
     paperSet:set
   }
   try {
-    const response=await apiRequest('post','',data,{
+    const response=await apiRequest('post','/exam',data,{
         headers:{
             'Content-Type': 'application/json',
            'Authorization': `Bearer ${token}`

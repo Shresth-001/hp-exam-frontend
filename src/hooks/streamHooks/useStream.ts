@@ -22,7 +22,8 @@ export const useStream=()=>{
             // console.log()
             if(data){
                 // console.log(data);
-                console.log(data.data.questions);
+                console.log(data.data);
+                localStorage.removeItem('examAnswer')
                 queryClient.setQueryData(['streamData'],{streamData:data.data});
                 queryClient.setQueryData(['questions'],{questionSet:data.data.questions});
                 setRedirectToInstruction(true);

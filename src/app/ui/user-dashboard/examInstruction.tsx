@@ -15,6 +15,7 @@ export default function ExamInstruction() {
   const handleStart = () => {
     if (isOffline && !offlineNav) {
       console.log("start exam");
+      router.push('/user/dashboard/exam/start');
     }
   };
   const buttonCss = clsx(

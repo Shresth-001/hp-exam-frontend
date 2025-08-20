@@ -100,7 +100,7 @@ export const Login = async (formData: FormData) => {
   //   };
   // }
   try {
-    const res = await apiRequest("post", "", formData, {
+    const res = await apiRequest("post", "/users/register", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
