@@ -43,7 +43,11 @@ export default function StreamSelectionList({}) {
     }
     console.log("selected backgroung", set);
     if(selected&&set){
-        sendStream.mutate({stream:selected,set:set});
+        sendStream.mutate({stream:selected,set:set},{
+          onError(error, variables, context) {
+              setError(error.message);
+          },
+        });
         console.log("Sucess")
     }
   };

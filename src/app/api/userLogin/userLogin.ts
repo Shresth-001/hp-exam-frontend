@@ -1,5 +1,7 @@
 "use server";
 import {apiRequest } from "@/services/axiosServices/apiService";
+import { cookies } from 'next/headers';
+
 interface FormErrors {
   name?: string;
   email?: string;
@@ -64,47 +66,27 @@ export const Login = async (formData: FormData) => {
     console.log("Error in details")
         return { status: 400, details: errors };
     }
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const API_URL1 = process.env.PUBLIC_API_URL;
-  // try {
-  //   console.log(formData.get("name"), formData.get("resume_url"));
-  //   // const res = await axios.post(`${API_URL1}`, formData, {
-  //   //   headers: { "Content-Type": "multipart/form-data" },
-  //   // });
-  //   const res=await apiRequest('post','',formData,{
-  //     headers: { "Content-Type": "multipart/form-data" },
-  //   })
-  //   // console.log(res.data,"here in userLogin");
-  //   // window.localStorage.setItem('token',res.data.token);
-  //   console.log(res);
-  //   return { success: true, data: res.data };
-  // } catch (error: any) {
-  //   if (error.response) {
-  //     let errorMessage = "Server error"; 
-  //     if (error.response.status === 404) {
-  //       errorMessage = "The requested API endpoint was not found.";
-  //     } else if (error.response.status === 400) {
-  //       errorMessage = "Bad request: Check your form data.";
-  //     } else if (error.response.status >= 500) {
-  //       console.log(error.response)
-  //       errorMessage = "Internal server error: The backend is having issues.";
-  //     }
-  //     return { 
-  //               status: error.response.status, 
-  //               details: { message: errorMessage } 
-  //           };
-  //   }
-  //   return { 
-  //     success: false, 
-  //     errors: { message: "Network error. Please check your connection." } 
-  //   };
-  // }
+
   try {
     const res = await apiRequest("post", "/users/register", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-
-    return { success: true, data: res.data };
+    if(res.success){
+      const token=res.data.token;
+   (await cookies()).set('token', token, {
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24, 
+      path: '/', 
+    });
+      return { success: true, data: res.data };
+    }else{
+      return {
+        success:res.success,
+        status:res.status,
+        details:res.details
+      }
+    }
   } catch (error: any) {
     return {
       success: false,

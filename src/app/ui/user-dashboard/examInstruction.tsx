@@ -1,4 +1,5 @@
 "use client";
+import withAuth from "@/components/auth/withAuth";
 import Button from "@/components/button/button";
 import { useOfflineCheck } from "@/hooks/checkInternetHook/useOfflineCheck";
 import clsx from "clsx";
@@ -6,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { FaArrowAltCircleRight } from "react-icons/fa";
 
-export default function ExamInstruction() {
+ function ExamInstruction() {
   const { isOffline, offlineNav } = useOfflineCheck();
   const router = useRouter();
   useEffect(() => {
@@ -64,3 +65,4 @@ export default function ExamInstruction() {
     </>
   );
 }
+export default withAuth(ExamInstruction)

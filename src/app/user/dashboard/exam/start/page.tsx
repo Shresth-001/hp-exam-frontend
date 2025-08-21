@@ -5,10 +5,10 @@ import { Suspense } from "react";
 export default function ExamPage() {
     return(
         <div className="">
-            <div>
+            <div className="flex items-center justify-center">
                 <Logo/>
             </div>
-            <div>
+            <div className="mt-5">
                 <Suspense fallback={"loading......."}>
                     <Exam/>
                 </Suspense>

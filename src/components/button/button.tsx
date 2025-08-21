@@ -10,13 +10,14 @@ interface buttonType{
     onClick?:()=>void
     hidden?:boolean;
     name?:string;
+    disable?:boolean
 }
 
-export default function Button({name,hidden,onClick,pendingtext,children,isPending,text='submit',type='button',className}:buttonType) {
+export default function Button({disable=false,name,hidden,onClick,pendingtext,children,isPending,text='submit',type='button',className}:buttonType) {
     return(
         <>
-        <button title={name} name={name} className={className} hidden={hidden} onClick={onClick} 
-       type={type} disabled={isPending} >{isPending?pendingtext:text}{children}</button>
+        <button title={name} name={name}  className={className} hidden={hidden} onClick={onClick} 
+       type={type} disabled={disable} >{isPending?pendingtext:text}{children}</button>
         </>
     )
 }

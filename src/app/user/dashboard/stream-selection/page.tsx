@@ -1,6 +1,6 @@
 import StreamSelectionList from "@/app/ui/user-dashboard/streamSelection";
 import Logo from "@/components/svg/logo";
-import { ChangeEvent, ReactEventHandler, Suspense, useState } from "react";
+import {Suspense } from "react";
 
 export default function StreamSelection() {  
   return (

@@ -23,7 +23,6 @@ export const StreamSend=async({set,stream,token}:props)=>{
   if(!allowedSet.includes(set)){
     console.log("invalid set")
   }
-  const API_URL=process.env.NEXT_PUBLIC_API_STREAM_URL;
   const data={
     jobRole:stream,
     paperSet:set

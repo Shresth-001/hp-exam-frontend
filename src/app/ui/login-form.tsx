@@ -83,13 +83,13 @@ export default function LoginForm() {
               <span className="block sm:inline">{errorsList.message}</span>
             </div>
           )}
-          <div className=" flex items-center justify-between ml-5 ">
-            <div className="relative ">
+          <div className=" flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 px-5">
+            <div className="relative flex-1 ">
               <InputField
                 value={formik.values.name}
                 onChange={formik.handleChange}
                 required={true}
-                className="peer  text-lg border-b-2 border-gray-300 bg-transparent leading-5 pt-4 px-3 pb-1 focus:outline-0  "
+                className="peer  text-lg border-b-2 border-gray-300 bg-transparent leading-5 pt-4 px-3 pb-1 focus:outline-0 w-full "
                 type="text"
                 id="name"
                 name="name"
@@ -102,14 +102,14 @@ export default function LoginForm() {
                 Name
               </label>
             </div>
-            <div className="relative">
+            <div className="relative flex-1">
               <InputField
                 value={formik.values.email}
                 onChange={formik.handleChange}
                 type="email"
                 name="email"
                 className={
-                  "peer  border-b-2 mr-10 border-gray-300 bg-transparent pt-4 px-3 pb-1  text-lg leading-5 focus:outline-0"
+                  "peer  border-b-2 mr-10 border-gray-300 bg-transparent pt-4 px-3 pb-1  text-lg leading-5 focus:outline-0 w-full"
                 }
                 placeholder={""}
                 error={
@@ -122,15 +122,15 @@ export default function LoginForm() {
               </label>
             </div>
           </div>
-          <div className="mt-5  flex items-center justify-start ml-5">
-            <div className="relative">
+          <div className="mt-5 flex flex-col sm:flex-row sm:items-center gap-5 px-5">
+            <div className="relative flex-1">
               <InputField
                 value={formik.values.phone}
                 onChange={formik.handleChange}
                 type="number"
                 name="phone"
                 className={
-                  "peer border-b-2 border-gray-300 bg-transparent pt-4 px-3 pb-1  text-lg leading-5 focus:outline-0"
+                  "peer border-b-2 border-gray-300 bg-transparent pt-4 px-3 pb-1  text-lg leading-5 focus:outline-0 w-full"
                 }
                 placeholder={""}
                 error={
@@ -142,14 +142,14 @@ export default function LoginForm() {
                 Phone
               </label>
             </div>
-            <div className="relative ml-7">
+            <div className="relative flex-1">
               <InputField
                 type="number"
                 value={formik.values.experience}
                 onChange={formik.handleChange}
                 name={"experience"}
                 className={
-                  "peer border-b-2 border-gray-300 mr-10  bg-transparent pt-4 px-3 pb-1  text-lg leading-5 focus:outline-0"
+                  "peer border-b-2 border-gray-300   bg-transparent pt-4 px-3 pb-1  text-lg leading-5 focus:outline-0 w-full"
                 }
                 placeholder={""}
                 error={
@@ -162,7 +162,7 @@ export default function LoginForm() {
               </label>
             </div>
           </div>
-          <div className="mt-8 flex items-center justify-center ">
+          <div className="mt-8 flex items-center justify-center px-5">
             <FileUploadInput
               id={"resume"}
               name={"resume"}
