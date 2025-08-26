@@ -12,16 +12,16 @@ import { FaArrowAltCircleRight } from "react-icons/fa";
   const router = useRouter();
   useEffect(() => {
     router.prefetch("/user/dashboard/exam/start");
-    if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({ type: "WARM_EXAM_CACHE" });
-    }
+    // if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
+    //   navigator.serviceWorker.controller.postMessage({ type: "WARM_EXAM_CACHE" });
+    // }
   }, [router]);
   const handleStart = () => {
-    if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({ type: "WARM_EXAM_CACHE" });
-    }
+    // if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
+    //   navigator.serviceWorker.controller.postMessage({ type: "WARM_EXAM_CACHE" });
+    // }
     // router.push("/user/dashboard/exam/start");
-    if (isOffline && offlineNav) {
+    if (isOffline) {
       console.log("start exam");
       router.push('/user/dashboard/exam/start');
     }
