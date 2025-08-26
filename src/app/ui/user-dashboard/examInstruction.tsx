@@ -25,8 +25,10 @@ import { FaArrowAltCircleRight } from "react-icons/fa";
     }
     // router.push("/user/dashboard/exam/start");
     // window.location.href = "/user/dashboard/exam/start";
+    if(isOffline&&offlineNav){
       console.log("start exam");
       router.push('/user/dashboard/exam/start');
+    }
     
   };
   const buttonCss = clsx(
