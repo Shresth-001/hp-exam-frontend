@@ -299,7 +299,7 @@ async function sendStoredAnswers() {
     const records = await getAllAnswers();
     if (!records.length) return;
     for (const record of records) {
-      await fetch("https://85ab1f3c2084.ngrok-free.app/response/submit", {
+      await fetch("https://f042b74d7319.ngrok-free.app/responses/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
