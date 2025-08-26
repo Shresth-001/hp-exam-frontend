@@ -21,7 +21,7 @@ import { FaArrowAltCircleRight } from "react-icons/fa";
       navigator.serviceWorker.controller.postMessage({ type: "WARM_EXAM_CACHE" });
     }
     // router.push("/user/dashboard/exam/start");
-    if (isOffline && offlineNav) {
+    if (isOffline ) {
       console.log("start exam");
       router.push('/user/dashboard/exam/start');
     }
