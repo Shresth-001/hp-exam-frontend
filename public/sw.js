@@ -316,6 +316,7 @@ async function sendStoredAnswers() {
     await clearAnswers();
   } catch (err) {
     console.error("❌ Sync failed, will retry later", err);
+    sendStoredAnswers();
     throw err;
   }
 }
