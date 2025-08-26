@@ -72,7 +72,7 @@ export default function Exam() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [isOffline,examState]);
+  }, [isOffline,examState,offlineNav]);
 
 //   const handleSubmit =async () => {
 //      try {
