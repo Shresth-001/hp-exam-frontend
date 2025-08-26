@@ -38,7 +38,7 @@ export const apiRequest = async <T = any>(
     };
   } catch (error: any) {
     const status = error.response?.status || 500;
-    let message = "Server error";
+    let message = error.response.data.message||"Server error";
 
     if (status === 404) message = "The requested API endpoint was not found.";
     else if (status === 400) message = "Bad request: Check your form data.";

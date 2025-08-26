@@ -95,7 +95,7 @@ export default function StreamSelectionList({}) {
       <div className="flex items-center justify-center mt-6">
         <SubmitButton
           handleSubmit={handleContinue}
-          isPending={false}
+          isPending={sendStream.isPending}
           text={"Continue"}
           className={
             "group w-85 rounded-3xl px-10 py-2 font-semibold flex items-center justify-center bg-gradient-to-r from-pink-700 to-red-700 text-white whitespace-nowrap hover:from-pink-600 hover:to-red-600 hover:shadow-lg hover:shadow-pink-400/50 transition-all duration-300"
