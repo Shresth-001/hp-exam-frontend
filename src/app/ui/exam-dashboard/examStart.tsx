@@ -11,13 +11,21 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { FaArrowAltCircleRight } from "react-icons/fa";
+interface SyncManager {
+  register(tag: string): Promise<void>;
+  getTags(): Promise<string[]>;
+}
 
+interface ServiceWorkerRegistration {
+  readonly sync: SyncManager;
+}
 export default function Exam() {
   const { questions, isLoading, isError, error } = useQuestion();
   const queryClient=useQueryClient();
   const [currentIndex, setCurrentIndex] = useState(0);
   const { isOffline, offlineNav } = useOfflineCheck();
   const [codeText, setCodeText] = useState<string>("");
+  const [examState, setExamState] = useState('in-progress');
   const {sendAnswer,saveAnswer} = useAnswer();
   const [answers, setAnswers] = useState<Record<number, string>>(() => {
     if (typeof window !== "undefined") {
@@ -45,20 +53,72 @@ export default function Exam() {
         },
       });
     }
-    prevOffline.current = isOffline;
-  }, [isOffline]);
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        handleSubmit();
+      }
+    };
+    const handleBeforeUnload = (event:BeforeUnloadEvent) => {
+      
+      if (examState !== 'submitted') {
+        handleSubmit();
+      }
+    };
 
-  const handleSubmit =async () => {
-     try {
-    await saveAnswer(answers);    
-    toast.success("Your Answer is Submitted ")
-    // router.push("/login");
-  } catch (e) {
-    console.error("Submit failed:", e);
-    toast.error("not submitted")
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    prevOffline.current = isOffline;
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isOffline,examState]);
+
+//   const handleSubmit =async () => {
+//      try {
+//     await saveAnswer(answers);    
+//     toast.success("Your Answer is Submitted ")
+//     router.push("/login");
+//   } catch (e) {
+//     console.error("Submit failed:", e);
+//     toast.error("not submitted")
+//     router.push("/login");
+//   }
+//  };
+const handleSubmit = () => {
+   if (examState === 'submitted') {
+      return; 
+    }
+    
+    setExamState('submitted');
+  const token = localStorage.getItem("token");
+  // const currentExam = JSON.parse(localStorage.getItem("currentExam") || "{}");
+  // const jobRole = currentExam?.jobRole;
+  // const paperSet = currentExam?.paperSet;
+  const cachedStream: any =
+      queryClient.getQueryData(["streamData"]) ??
+      JSON.parse(localStorage.getItem("streamData") || "{}");
+
+    const jobRole = cachedStream?.streamData.jobRole;
+    const paperSet = cachedStream?.streamData.paperSet;
+
+  if (navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({
+      type: "SAVE_ANSWER",
+      payload: { answers, token, jobRole, paperSet },
+    });
+
+    navigator.serviceWorker.ready.then((reg) => {
+      if ("sync" in reg) (reg.sync as SyncManager).register("sync-answers").catch(() => {});
+    });
+
+    alert("📩 You are offline. Answers saved & will sync when online!");
     router.push("/login");
+  } else {
+    alert("⚠️ Service Worker not active");
   }
- };
+};
+
   const { formatTime, timeLeft } = useCountdownTimer({
     duration: 60 * 60,
     storageKey: "exam_123_time",
@@ -149,7 +209,6 @@ export default function Exam() {
                           onClick={() => {
                             selectOption(opt);
                           }}
-                          children={undefined}
                         />
                       </div>
                     ))}
@@ -183,7 +242,7 @@ export default function Exam() {
                     text={"Prev"}
                     onClick={() => setCurrentIndex((prev) => prev - 1)}
                     className={"px-4 py-2 rounded-md bg-gray-300"}
-                    children={undefined}
+                    
                   />
                   <Button
                     hidden={currentIndex + 1 === questions.questionSet.length}
@@ -195,7 +254,7 @@ export default function Exam() {
                     text={"Next"}
                     className={"px-4 py-2 ml-10 bg-blue-600 text-white rounded"}
                     onClick={() => setCurrentIndex((prev) => prev + 1)}
-                    children={undefined}
+                    
                   />
                   {currentIndex + 1 === questions.questionSet.length && (
                     <Button

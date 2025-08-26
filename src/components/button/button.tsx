@@ -5,7 +5,7 @@ interface buttonType{
     text:string;
     type?:'button'|'submit'|'reset';
     className:string;
-    children:React.ReactNode;
+    children?:React.ReactNode;
     pendingtext?:string;
     onClick?:()=>void
     hidden?:boolean;
