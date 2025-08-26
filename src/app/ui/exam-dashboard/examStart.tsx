@@ -102,21 +102,23 @@ const handleSubmit = () => {
     const jobRole = cachedStream?.streamData.jobRole;
     const paperSet = cachedStream?.streamData.paperSet;
 
-  if (navigator.serviceWorker.controller) {
-    navigator.serviceWorker.controller.postMessage({
-      type: "SAVE_ANSWER",
-      payload: { answers, token, jobRole, paperSet },
-    });
+  // if (navigator.serviceWorker.controller) {
+  //   navigator.serviceWorker.controller.postMessage({
+  //     type: "SAVE_ANSWER",
+  //     payload: { answers, token, jobRole, paperSet },
+  //   });
 
-    navigator.serviceWorker.ready.then((reg) => {
-      if ("sync" in reg) (reg.sync as SyncManager).register("sync-answers").catch(() => {});
-    });
+  //   navigator.serviceWorker.ready.then((reg) => {
+  //     if ("sync" in reg) (reg.sync as SyncManager).register("sync-answers").catch(() => {});
+  //   });
 
-    alert("📩 You are offline. Answers saved & will sync when online!");
-    router.push("/login");
-  } else {
-    alert("⚠️ Service Worker not active");
-  }
+  //   alert("📩 You are offline. Answers saved & will sync when online!");
+  //   router.push("/login");
+  // } else {
+  //   alert("⚠️ Service Worker not active");
+  // }
+  console.log("submitted ")
+  router.push('/login');
 };
 
   const { formatTime, timeLeft } = useCountdownTimer({
