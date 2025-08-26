@@ -68,7 +68,8 @@ export const Login = async (formData: FormData) => {
     }
 
   try {
-    const res = await apiRequest("post", "/users/register", formData, {
+    console.log("reached in login")
+    const res = await apiRequest("post", "/user/register", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     if(res.success){
