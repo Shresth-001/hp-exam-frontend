@@ -20,7 +20,7 @@ export const sendAnswerApi = async ({
       paperSet: paperSet,
       answers: answer,
     };
-    const response = await apiRequest("post", "responses/submit", data, {
+    const response = await apiRequest("post", "/responses/submit", data, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
