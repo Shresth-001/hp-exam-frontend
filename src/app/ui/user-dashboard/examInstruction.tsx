@@ -15,16 +15,19 @@ import { FaArrowAltCircleRight } from "react-icons/fa";
     if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
       navigator.serviceWorker.controller.postMessage({ type: "WARM_EXAM_CACHE" });
     }
+    if (navigator.serviceWorker?.controller) {
+      navigator.serviceWorker.controller.postMessage({ type: "WARM_EXAM_CACHE" });
+    }
   }, [router]);
   const handleStart = () => {
     if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
       navigator.serviceWorker.controller.postMessage({ type: "WARM_EXAM_CACHE" });
     }
     // router.push("/user/dashboard/exam/start");
-    if (isOffline && !offlineNav) {
+    // window.location.href = "/user/dashboard/exam/start";
       console.log("start exam");
       router.push('/user/dashboard/exam/start');
-    }
+    
   };
   const buttonCss = clsx(
     "group w-85 rounded-3xl px-10 py-2 font-semibold flex items-center justify-center  whitespace-nowrap",
